@@ -3,6 +3,7 @@ package pinyin
 import (
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 // Meta
@@ -247,6 +248,46 @@ func LazyPinyin(s string, a Args) []string {
 		pys = append(pys, v[0])
 	}
 	return pys
+}
+
+func getSegPinyin(s string) []string {
+	pys := make([]string, 0)
+	if s == "" {
+		return pys
+	}
+	nohans := ""
+	for _, r := range s {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) {
+			continue
+		}
+		if single, ok := PinyinDict[int(r)]; ok {
+			if nohans != "" {
+				pys = append(pys, nohans)
+				nohans = ""
+			}
+			pys = append(pys, strings.Split(single, ",")[0])
+		} else {
+			nohans += string(r)
+		}
+	}
+	if nohans != "" {
+		pys = append(pys, nohans)
+	}
+	return pys
+}
+
+func LazyPinyinV1(s string) []string {
+	a := NewArgs()
+	a.Style = Normal
+	pys := make([]string, 0)
+	for _, phrase := range jieba.Cut(s, true) {
+		if pinyin, ok := PhraseDict[phrase]; ok {
+			pys = append(pys, strings.Split(pinyin, " ")...)
+		} else {
+			pys = append(pys, getSegPinyin(phrase)...)
+		}
+	}
+	return applyStyle(pys, a)
 }
 
 // Slug join `LazyPinyin` 的返回值.
