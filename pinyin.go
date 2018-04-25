@@ -276,9 +276,7 @@ func getSegPinyin(s string) []string {
 	return pys
 }
 
-func LazyPinyinV1(s string) []string {
-	a := NewArgs()
-	a.Style = Normal
+func LazyPinyinV1(s string, a Args) []string {
 	pys := make([]string, 0)
 	for _, phrase := range jieba.Cut(s, true) {
 		if pinyin, ok := PhraseDict[phrase]; ok {

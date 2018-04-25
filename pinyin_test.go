@@ -392,27 +392,34 @@ func TestLazyConvert(t *testing.T) {
 }
 
 func TestLazyPinyinV1(t *testing.T) {
+	a := NewArgs()
 	s := "wechat 软著讨论群"
 	target := []string{"wechat", "ruan", "zhu", "tao", "lun", "qun"}
-	v := LazyPinyinV1(s)
+	v := LazyPinyinV1(s, a)
 	if !reflect.DeepEqual(v, target) {
 		t.Errorf("Expected %v, got %v", target, v)
 	}
 	s1 := "毕业行"
 	target1 := []string{"bi", "ye", "xing"}
-	v1 := LazyPinyinV1(s1)
+	v1 := LazyPinyinV1(s1, a)
 	if !reflect.DeepEqual(v1, target1) {
 		t.Errorf("Expected %v, got %v", target1, v1)
 	}
 	s2 := "中国人"
 	target2 := []string{"zhong", "guo", "ren"}
 	s3 := "中国人👿+（）【】[]】）"
-	v2 := LazyPinyinV1(s2)
-	v3 := LazyPinyinV1(s3)
+	v2 := LazyPinyinV1(s2, a)
+	v3 := LazyPinyinV1(s3, a)
 	if !reflect.DeepEqual(v2, target2) {
 		t.Errorf("Expected %v, got %v", target2, v2)
 	}
 	if !reflect.DeepEqual(v3, target2) {
 		t.Errorf("Expected %v, got %v", target2, v3)
+	}
+	target4 := []string{"w", "r", "z", "t", "l", "q"}
+	a.Style = FIRST_LETTER
+	v4 := LazyPinyinV1(s, a)
+	if !reflect.DeepEqual(v4, target4) {
+		t.Errorf("Expected %v, got %v", target4, v4)
 	}
 }
