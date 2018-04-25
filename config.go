@@ -19,15 +19,30 @@ var (
 	PhraseDict map[string]string
 )
 
-func init() {
-	dictDir := path.Join(path.Dir(getCurrentFilePath()), "dict")
+func InitDict(dictPath *string) {
+	var dictDir string
+	var initInSpecialDir = false
+	if dictPath != nil && *dictPath != "" {
+		dictDir = *dictPath
+		initInSpecialDir = true
+	} else {
+		dictDir = path.Join(path.Dir(getCurrentFilePath()), "dict")
+	}
 	pinyinDictPath := path.Join(dictDir, "pinyin_dict")
 	phraseDictPath := path.Join(dictDir, "phrase_dict")
 	PinyinDict = make(map[int]string)
 	PhraseDict = make(map[string]string)
-	jieba = gojieba.NewJieba()
 	parsePinyinDict(pinyinDictPath)
 	parsePhraseDict(phraseDictPath)
+	if initInSpecialDir {
+		jiebaPaths := []string{}
+		for _, dictName := range []string{"jieba.dict.utf8", "hmm_model.utf8", "user.dict.utf8", "idf.utf8", "stop_words.utf8"} {
+			jiebaPaths = append(jiebaPaths, path.Join(dictDir, dictName))
+		}
+		jieba = gojieba.NewJieba(jiebaPaths...)
+	} else {
+		jieba = gojieba.NewJieba()
+	}
 }
 
 func getCurrentFilePath() string {

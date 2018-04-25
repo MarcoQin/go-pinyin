@@ -11,6 +11,10 @@ type testCase struct {
 	result [][]string
 }
 
+func init() {
+	InitDict(nil)
+}
+
 func testPinyin(t *testing.T, s string, d []testCase, f pinyinFunc) {
 	for _, tc := range d {
 		v := f(s, tc.args)
