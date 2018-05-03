@@ -3,6 +3,7 @@ package pinyin
 import (
 	"reflect"
 	"testing"
+	"fmt"
 )
 
 type pinyinFunc func(string, Args) [][]string
@@ -426,4 +427,7 @@ func TestLazyPinyinV1(t *testing.T) {
 	if !reflect.DeepEqual(v4, target4) {
 		t.Errorf("Expected %v, got %v", target4, v4)
 	}
+	s5 := "小明的测试共享日历"
+	v5 := Cut(s5)
+	fmt.Println(v5)
 }

@@ -288,6 +288,10 @@ func LazyPinyinV1(s string, a Args) []string {
 	return applyStyle(pys, a)
 }
 
+func Cut(s string) []string {
+	return jieba.Cut(s, true)
+}
+
 // Slug join `LazyPinyin` 的返回值.
 // 建议改用 https://github.com/mozillazg/go-slugify
 func Slug(s string, a Args) string {
